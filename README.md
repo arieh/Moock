@@ -7,7 +7,7 @@ The 2 main tools supplied are:
 2. A Class Mutator that allows stubbing specific methods within a class.
 
 
-*The stubing mechanism is inspired by the mechanism described in (Test Driven Javascript Development)[http://tddjs.com/].*
+*The stubing mechanism is inspired by the mechanism described in [Test Driven Javascript Development](http://tddjs.com/).*
 
 ![Screenshot](https://github.com/arieh/Moock/raw/master/moock.png)
 
