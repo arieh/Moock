@@ -7,7 +7,7 @@ The 2 main tools supplied are:
 
 * The stubing mechanism is inspired by the mechanism described in (Test Driven Javascript Development)[http://tddjs.com/ "TDD JS"]. *
 
-![Screenshot]()
+![Screenshot](https://github.com/arieh/Moock/raw/master/moock.png)
 
 How To Use
 ==========
