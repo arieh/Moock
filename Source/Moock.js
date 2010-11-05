@@ -10,7 +10,7 @@ authors:
 requires:
 - core/1.3: [Class]
 
-provides: [getStub,Class.Mutators.Mock,getMock,isStub]
+provides: [getStub,Class.Mutators.Mock,getMock,isStub,Request.Mock]
 
 ...
 */
@@ -36,16 +36,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE 
 */
 
+var Moock = {
+	version : 0.7
+	, return_self : function(){}
+};
 /**
  * creates a stub function
  * @param {Mixed} value if passed, the stub will return this value once it runs.
  * @return {Function} a stub function
  */
 function getStub(value){
-    function Stub(){
+	function Stub(){
         Stub.called = true;
         Stub.args = arguments;
-        if (typeOf(value) == 'function') return value.apply(Stub,arguments);
+        if (value === Moock.return_self) return this;
+		if (typeOf(value) == 'function') return value.apply(Stub,arguments);
 		return value;
     }
     Stub.called = false;
@@ -92,3 +97,4 @@ function getMock(classname,methods){
 function isStub(stub){
     return ("args" in stub && "called" in stub);
 }
+

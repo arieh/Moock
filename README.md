@@ -61,8 +61,20 @@ This can be used to encapsulate the assertions, or to perform very low level log
         return arg1+arg2;
     });
     
+#### Stubbing with chaining
+
+In JS, many of our objects support chaining. Moock's stubbing method supports this via the <code>Moock.return_self</code> variable:
+
+    #JS
+    var obj = {
+         a : getStub(Moock.return_self)
+    };
+    
+    assertTrue(obj === obj.a());
+
     
 The package also comes with a helper function - `isStub` - that is used to check if a given method is a true method or a stub.
+
 ### Mocking
 
 The package adds a new Class Mutator called Mock. It receives a literal object containing a list of method names 

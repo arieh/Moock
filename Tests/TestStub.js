@@ -44,4 +44,11 @@ TestCase("StubTest",{
 		assertEquals("aabb",stub("a","b"));
 		assertTrue(used);
 	}
+    , "test chaining" : function(){
+		var obj = {			
+			a:getStub(Moock.return_self)
+		};
+		
+		assertTrue(obj === obj.a());
+	}
 }); 
