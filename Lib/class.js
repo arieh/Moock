@@ -6,7 +6,7 @@ web build:
  - http://mootools.net/core/58f64dfefa42b08cb566c95a6244e613
 
 packager build:
- - packager build Core/Core Core/Class
+ - packager build Core/Class
 
 /*
 ---
@@ -167,9 +167,7 @@ var Type = this.Type = function(name, object){
 			object.prototype.$family = (function(){
 				return lower;
 			}).hide();
-			//<1.2compat>
-			object.type = typeCheck;
-			//</1.2compat>
+			
 		}
 	}
 
@@ -400,125 +398,7 @@ String.extend('uniqueID', function(){
 	return (UID++).toString(36);
 });
 
-//<1.2compat>
 
-var Hash = this.Hash = new Type('Hash', function(object){
-	if (typeOf(object) == 'hash') object = Object.clone(object.getClean());
-	for (var key in object) this[key] = object[key];
-	return this;
-});
-
-Hash.implement({
-
-	forEach: function(fn, bind){
-		Object.forEach(this, fn, bind);
-	},
-
-	getClean: function(){
-		var clean = {};
-		for (var key in this){
-			if (this.hasOwnProperty(key)) clean[key] = this[key];
-		}
-		return clean;
-	},
-
-	getLength: function(){
-		var length = 0;
-		for (var key in this){
-			if (this.hasOwnProperty(key)) length++;
-		}
-		return length;
-	}
-
-});
-
-Hash.alias('each', 'forEach');
-
-Object.type = Type.isObject;
-
-var Native = this.Native = function(properties){
-	return new Type(properties.name, properties.initialize);
-};
-
-Native.type = Type.type;
-
-Native.implement = function(objects, methods){
-	for (var i = 0; i < objects.length; i++) objects[i].implement(methods);
-	return Native;
-};
-
-var arrayType = Array.type;
-Array.type = function(item){
-	return instanceOf(item, Array) || arrayType(item);
-};
-
-this.$A = function(item){
-	return Array.from(item).slice();
-};
-
-this.$arguments = function(i){
-	return function(){
-		return arguments[i];
-	};
-};
-
-this.$chk = function(obj){
-	return !!(obj || obj === 0);
-};
-
-this.$clear = function(timer){
-	clearTimeout(timer);
-	clearInterval(timer);
-	return null;
-};
-
-this.$defined = function(obj){
-	return (obj != null);
-};
-
-this.$each = function(iterable, fn, bind){
-	var type = typeOf(iterable);
-	((type == 'arguments' || type == 'collection' || type == 'array' || type == 'elements') ? Array : Object).each(iterable, fn, bind);
-};
-
-this.$empty = function(){};
-
-this.$extend = function(original, extended){
-	return Object.append(original, extended);
-};
-
-this.$H = function(object){
-	return new Hash(object);
-};
-
-this.$merge = function(){
-	var args = Array.slice(arguments);
-	args.unshift({});
-	return Object.merge.apply(null, args);
-};
-
-this.$lambda = Function.from;
-this.$mixin = Object.merge;
-this.$random = Number.random;
-this.$splat = Array.from;
-this.$time = Date.now;
-
-this.$type = function(object){
-	var type = typeOf(object);
-	if (type == 'elements') return 'array';
-	return (type == 'null') ? false : type;
-};
-
-this.$unlink = function(object){
-	switch (typeOf(object)){
-		case 'object': return Object.clone(object);
-		case 'array': return Array.clone(object);
-		case 'hash': return new Hash(object);
-		default: return object;
-	}
-};
-
-//</1.2compat>
 
 })();
 
@@ -690,15 +570,7 @@ Array.implement({
 
 });
 
-//<1.2compat>
 
-Array.alias('extend', 'append');
-
-var $pick = function(){
-	return Array.from(arguments).pick();
-};
-
-//</1.2compat>
 
 
 /*
@@ -853,54 +725,7 @@ Function.implement({
 
 });
 
-//<1.2compat>
 
-delete Function.prototype.bind;
-
-Function.implement({
-
-	create: function(options){
-		var self = this;
-		options = options || {};
-		return function(event){
-			var args = options.arguments;
-			args = (args != null) ? Array.from(args) : Array.slice(arguments, (options.event) ? 1 : 0);
-			if (options.event) args = [event || window.event].extend(args);
-			var returns = function(){
-				return self.apply(options.bind || null, args);
-			};
-			if (options.delay) return setTimeout(returns, options.delay);
-			if (options.periodical) return setInterval(returns, options.periodical);
-			if (options.attempt) return Function.attempt(returns);
-			return returns();
-		};
-	},
-
-	bind: function(bind, args){
-		var self = this;
-		if (args != null) args = Array.from(args);
-		return function(){
-			return self.apply(bind, args || arguments);
-		};
-	},
-
-	bindWithEvent: function(bind, args){
-		var self = this;
-		if (args != null) args = Array.from(args);
-		return function(event){
-			return self.apply(bind, (args == null) ? arguments : [event].concat(args));
-		};
-	},
-
-	run: function(args, bind){
-		return this.apply(bind, Array.from(args));
-	}
-
-});
-
-var $try = Function.attempt;
-
-//</1.2compat>
 
 
 /*

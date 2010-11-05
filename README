@@ -134,3 +134,4 @@ If that Class is not defined, the helper will create a mock for it. This is usef
     var m = new mock;
     
     assertTrue(m instanceof ClassA); //works whether there is a real ClassA or not
+    
