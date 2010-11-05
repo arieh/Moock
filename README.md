@@ -11,8 +11,8 @@ The 2 main tools supplied are:
 
 ![Screenshot](https://github.com/arieh/Moock/raw/master/moock.png)
 
-How to Use
-==========
+How to use
+----------
 
 ### Stubbing
 
