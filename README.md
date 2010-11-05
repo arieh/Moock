@@ -6,7 +6,8 @@ The 2 main tools supplied are:
 1. A method for creating stub functions, that allows you to define a set of expectations for the method and to pass it a returned value.
 2. A Class Mutator that allows stubbing specific methods within a class.
 
-* The stubing mechanism is inspired by the mechanism described in (Test Driven Javascript Development)[http://tddjs.com/ "TDD JS"]. *
+
+*The stubing mechanism is inspired by the mechanism described in (Test Driven Javascript Development)[http://tddjs.com/ "TDD JS"].*
 
 ![Screenshot](https://github.com/arieh/Moock/raw/master/moock.png)
 
