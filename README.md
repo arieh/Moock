@@ -2,6 +2,7 @@ Moock
 ===================
 Moock is a package of tools for JS TDD development, apecifically designed for Class development.
 The 2 main tools supplied are:
+
 1. A method for creating stub functions, that allows you to define a set of expectations for the method and to pass it a returned value.
 2. A Class Mutator that allows stubbing specific methods within a class.
 
