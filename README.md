@@ -1,13 +1,13 @@
 Moock
 ===================
-Moock is a package of tools for JS TDD development, apecifically designed for Class development.
+Moock is a package of tools for JS TDD development, specifically designed for Class development.
 The 2 main tools supplied are:
 
 1. A method for creating stub functions, that allows you to define a set of expectations for the method and to pass it a returned value.
 2. A Class Mutator that allows stubbing specific methods within a class.
 
 
-*The stubing mechanism is inspired by the mechanism described in [Test Driven Javascript Development](http://tddjs.com/).*
+*The stubbing mechanism is inspired by the mechanism described in [Test Driven Javascript Development](http://tddjs.com/).*
 
 ![Screenshot](https://github.com/arieh/Moock/raw/master/moock.png)
 
@@ -25,7 +25,7 @@ For creating stubs, we use the `getStub` method:
 The passed value will be returned when the method is called. The returned stub comes with a set of attributes that allows us to test it's usage:
 
 1. called (bool) : wether or not the function was called.
-2. args (array) : what paramaters were passed to the funcion when called.
+2. args (array) : what parameters were passed to the function when called.
 
 With these in mind, we can create a simple test:
 
@@ -66,7 +66,7 @@ The package also comes with a helper function - `isStub` - that is used to check
 ### Mocking
 
 The package adds a new Class Mutator called Mock. It receives a literal object containing a list of method names 
-to mock paired with retured value.
+to mock paired with returned value.
 
     #JS
     /* simple usage */
@@ -126,7 +126,7 @@ to mock paired with retured value.
     
     
 The package also comes with a helper function - `getMock` - that creates a mock that is an instance of a certain Class. 
-If that Class is not defined, the helper will create a mock for it. This is useful for depedancy injection tests:
+If that Class is not defined, the helper will create a mock of that Class. This is useful for dependency injection tests:
 
     #JS
     var mock = getMock('ClassA',{
@@ -136,4 +136,3 @@ If that Class is not defined, the helper will create a mock for it. This is usef
     var m = new mock;
     
     assertTrue(m instanceof ClassA); //works whether there is a real ClassA or not
-    
