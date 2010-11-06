@@ -70,6 +70,8 @@ Lastly, for those who want to use the library with non-supported libraries, the 
 * args (`array`) : what argumens were passed to the stub on the last call
 * returned : what value to return when the stub is called.
 
+Example:
+
     #JS
     var stub = new Moock.Stub('aaa');
         
