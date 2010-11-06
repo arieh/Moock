@@ -7,14 +7,15 @@ The 2 main tools supplied are:
 2. A Class Mutator that allows stubbing specific methods within a class.
 
 
-*NOTE*
+*NOTE
+
 Since v0.8, Moock's Stub is now cross-lib, and supports advanced expectation settings. It's syntax is also slightly changed.
 Moock currently support these test libs:
 
 1. JsTestDriver
 2. YUI Test
 3. QUnit
-4. Jasmine
+4. Jasmine*
 
 *The basic stubbing mechanism was inspired by the mechanism described in [Test Driven Javascript Development](http://tddjs.com/).*
 
@@ -79,6 +80,18 @@ Example:
     console.log(stub.used); //1
          
     console.log(stub.args); //["a"]
+
+#### Adding more library support
+
+If you wish to add support for more libraries, simply add them to the Moock.Libraries object. Each addition should be an object
+containing the folowing properties/methods:
+
+* check : wheather or not to use the library on the current run. Should be a check for library availibility
+* isTrue : passed 2 variables- an expresion and a message. Should run your library of choise assertion.
+* areEqual : passed 3 variables - expected, actual and message. 
+
+For more usage details, look up Libraries.Extra.js. 
+
 
 ### Mocking
 

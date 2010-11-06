@@ -33,29 +33,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE 
 */
 
+
+(function(window,undef){
 /**
  * Main Namespace 
  * 
  * Contains Version Number, Assertion Helpers, and Moock.Stub 
  */
-var Moock = {
-	version : 0.7
-	/**
-	 * Library Assertion Helpers for cross-lib compatibility.
-	 * Currently Supported:
-	 *   - YUI test
-	 *   - QUnit
-	 *   - Jasmine
-	 *   - JsTestRunner
-	 */
-	, YUI_TEST : (window['YAHOO'] && YAHOO['utils'] && YAHOO.utils['Assert']) ? YAHOO.utils.Assert : false
-	, QUnit  : (window['QUnit']) ? QUnit : false
-	, jasmine : (window['jasmin'] && expect) ? true : false  
+Moock = {
+	version : "0.8.1"
 	/**
 	 * @var {Function} pointer used to tell the stub to return "this"
 	 */
 	, return_self : function(){}
-    
+	/**
+     * Library Assertion Helpers for cross-lib compatibility.
+     * Currently Supported:
+     *   - YUI test
+     *   - QUnit
+     *   - Jasmine
+     *   - JsTestRunner
+     */
+    , Libraries : {
+		JsTestDriver : {
+			check : !!(window.assertTrue && window.assertEquals)
+			, isTrue : function(expr,msg){
+				assertTrue(expr,msg);
+			}
+			, areEqual : function(expect,actual,msg){
+				assertEquals(expect,actual,msg);
+			}
+		}
+	}
 	/**
 	 * Cross-Lib Assertion Decorators
 	 */
@@ -66,10 +75,10 @@ var Moock = {
 		 * @param {Object} msg
 		 */
 		isTrue : function(expr,msg){
-			if (window['assertTrue']) assertTrue(expr);
-			if (Moock.YUI_TEST)	Moock.YUI_TEST.isTrue(expr,msg);
-			if (Moock.QUnit) Moock.QUnit.ok(expt,msg); 
-			if (Moock.jasmine) expect(expr).toEqual(true);
+		  var libs = Moock.Libraries;
+		  for (var name in libs){
+		  	if (libs[name].check) libs[name].isTrue(expr,msg);
+		  }	
 		}
 		/**
 		 * Asserts that two values are equal
@@ -78,10 +87,10 @@ var Moock = {
 		 * @param {Object} msg
 		 */
 		, areEqual : function(expect,actual,msg){
-			if (window['assertEquals']) assertEquals(expect,actual);
-            if (Moock.YUI_TEST) Moock.YUI_TEST.areEqual(expect,actual,msg);
-            if (Moock.QUnit) Moock.QUnit.equal(actual,expect,msg); 
-            if (Moock.jasmine) expect(actual).toEqual(expect);
+          var libs = Moock.Libraries;
+          for (var name in libs){
+            if (libs[name].check) libs[name].areEqual(expect,actual,msg);
+          } 			
 		}
 	}
 	/**
@@ -95,25 +104,25 @@ var Moock = {
 	 * @return {Function} a stub function
 	 */
 	, Stub : function Stub(value){
-	    function Stub(){
+	    function stb(){
 	        var value = Stub.returned;
 	        
-	        Stub.used++;
+	        stb.used++;
 			 
-			if (Stub.tests.args) Moock.Assert.areEqual(Stub.tests.args,arguments);
+			if (stb.tests.args) Moock.Assert.areEqual(stb.tests.args,arguments);
 			
-	        Stub.args = arguments;
+	        stb.args = arguments;
 	        if (value === Moock.return_self) return this;
-	        if (typeof value == 'function') return value.apply(Stub,arguments);
+	        if (typeof value == 'function') return value.apply(stb,arguments);
 	        return value;
 	    }
 	    
-	    Stub.used = 0;
-	    Stub.args = [];
+	    stb.used = 0;
+	    stb.args = [];
 	    
-	    Stub.returned = value;
+	    stb.returned = value;
 	    
-	    Stub.tests = {
+	    stb.tests = {
 	        used : false
 	      , args : false
 	    };
@@ -127,7 +136,7 @@ var Moock = {
 		 *    
 		 * @return {Function} the stub object
 		 */
-	    Stub.called = function shouldBeCalled(num){
+	    stb.called = function shouldBeCalled(num){
 	       if (!num && num !==0){
 	           this.tests.called = true;
 	       }else if (num || num===0){
@@ -142,7 +151,7 @@ var Moock = {
          *    
          * @return {Function} the stub object
 		 */
-	    Stub.receive = function(args){
+	    stb.receive = function(args){
 	       this.tests.args = args;
 	       return this;
 	    };  
@@ -154,7 +163,7 @@ var Moock = {
          *    
          * @return {Function} the stub object
 		 */
-	    Stub.returnedValue = function(value){
+	    stb.returnedValue = function(value){
 	       this.returned = value;
 	       return this;
 	    };
@@ -164,13 +173,13 @@ var Moock = {
          *    
          * @return {Function} the stub object
 		 */
-	    Stub.test = function(){
+	    stb.test = function(){
 	       if (typeof this.tests.ued === 'number'){
 	           Moock.Assert.areEqual(this.tests.used,this.used);
-	       }else if (this.tests.used) Moock.Assert.isTrue(this.called == true);
+	       }else if (this.tests.used) Moock.Assert.isTrue(!!this.called);
 	    };
 	    
-	    return Stub;
+	    return stb;
 	}
 };
 
@@ -185,3 +194,4 @@ function isStub(stub){
     return ("args" in stub && "called" in stub);
 }
 
+})(this);
