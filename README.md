@@ -66,15 +66,15 @@ The returned value can also be a function. If so, the function will be used when
 
 Lastly, for those who want to use the library with non-supported libraries, the Stub object also supllies these low-leveled properties that you can use to test your stubs:
 
-  * used (`int`) : how many times the stub was called
-  * args (`array`) : what argumens were passed to the stub on the last call
-  * returned : what value to return when the stub is called.
+* used (`int`) : how many times the stub was called
+* args (`array`) : what argumens were passed to the stub on the last call
+* returned : what value to return when the stub is called.
 
 
-    #JS
     var stub = new Moock.Stub('aaa');
     
     console.log(stub("a")); //aaa
+    
     console.log(stub.used); //1
      
     console.log(stub.args); //["a"]
