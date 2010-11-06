@@ -58,7 +58,7 @@ TestCase("Class.Mock Test",{
 		
 		var m = new mock;
 		m.getA();
-		assertTrue(m.a.called);
+		assertTrue(m.a.used == true);
 		assertEquals(["b"],m.a.args);
 	}
 });
