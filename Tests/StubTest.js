@@ -92,20 +92,6 @@ TestCase("StubTest",{
            ,[111]
        ]
     )
-	, "test mocking getElementById" : function(){
-		var gid = document.getElementById;
-		document.getElementById = 
-		    new Moock.Stub()
-		       .called(1)
-		       .receive(["a"])
-		       .returnedValue(document.createElement('div'));
-		       
-		document.getElementById("a");
-			   
-		document.getElementById.test();
-		
-		document.getElementById = gid;
-	}
 }); 
 
 
