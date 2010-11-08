@@ -41,7 +41,7 @@ THE SOFTWARE
  * Contains Version Number, Assertion Helpers, and Moock.Stub 
  */
 Moock = {
-	version : "0.8.1"
+	version : "0.8.2"
 	/**
 	 * @var {Function} pointer used to tell the stub to return "this"
 	 */
@@ -58,10 +58,14 @@ Moock = {
 		JsTestDriver : {
 			check : !!(window.assertTrue && window.assertEquals)
 			, isTrue : function(expr,msg){
-				assertTrue(expr,msg);
+				if (msg){
+					assertTrue(msg,expr);
+				} else assertTrue(expr);
 			}
 			, areEqual : function(expect,actual,msg){
-				assertEquals(expect,actual,msg);
+				if (msg){
+					assertEquals(msg,expect,actual);
+				} else assertEquals(expect,actual);
 			}
 		}
 	}
@@ -105,11 +109,15 @@ Moock = {
 	 */
 	, Stub : function Stub(value){
 	    function stb(){
-	        var value = Stub.returned;
+	        var value = stb.returned;
 	        
 	        stb.used++;
 			 
-			if (stb.tests.args) Moock.Assert.areEqual(stb.tests.args,arguments);
+			if (stb.tests.args) Moock.Assert.areEqual(
+			   stb.tests.args
+			   , arguments
+			   , "Passed parameters do not meet expectations"
+			);
 			
 	        stb.args = arguments;
 	        if (value === Moock.return_self) return this;
@@ -138,11 +146,11 @@ Moock = {
 		 */
 	    stb.called = function shouldBeCalled(num){
 	       if (!num && num !==0){
-	           this.tests.called = true;
+	           stb.tests.used = true;
 	       }else if (num || num===0){
-	           this.tests.called = num;
+	           stb.tests.used = num;
 	       }
-	       return this;
+	       return stb;
 	    };
 	    
 		/**
@@ -152,8 +160,8 @@ Moock = {
          * @return {Function} the stub object
 		 */
 	    stb.receive = function(args){
-	       this.tests.args = args;
-	       return this;
+	       stb.tests.args = args;
+	       return stb;
 	    };  
 	    
 		/**
@@ -164,8 +172,8 @@ Moock = {
          * @return {Function} the stub object
 		 */
 	    stb.returnedValue = function(value){
-	       this.returned = value;
-	       return this;
+	       stb.returned = value;
+	       return stb;
 	    };
 	    
 		/**
@@ -174,9 +182,13 @@ Moock = {
          * @return {Function} the stub object
 		 */
 	    stb.test = function(){
-	       if (typeof this.tests.ued === 'number'){
-	           Moock.Assert.areEqual(this.tests.used,this.used);
-	       }else if (this.tests.used) Moock.Assert.isTrue(!!this.called);
+		   var msg = "Number of calls did not meet expectation";
+		   
+		   if (typeof this.tests.used === 'number'){
+	           Moock.Assert.areEqual(this.tests.used,this.used,msg);
+	       }else if (this.tests.used) Moock.Assert.isTrue(!!this.called,msg);
+		   
+		   return stb;
 	    };
 	    
 	    return stb;
@@ -190,8 +202,8 @@ Moock = {
  * @param {Object} stub
  * @return {bool}
  */
-function isStub(stub){
+isStub = function isStub(stub){
     return ("args" in stub && "called" in stub);
-}
+};
 
 })(this);

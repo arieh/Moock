@@ -46,10 +46,11 @@ TestCase("StubTest",{
 	}
     , "test chaining" : function(){
 		var obj = {			
-			a:new Moock.Stub(Moock.return_self)
-		};
+				a:new Moock.Stub(Moock.return_self)
+			}
+	       , test = obj.a(); 
 		
-		assertTrue(obj === obj.a());
+		assertSame(obj,test);
 	}
 	, "test stub.called using 0" : function(){
 		var stub = new Moock.Stub();
@@ -91,4 +92,20 @@ TestCase("StubTest",{
            ,[111]
        ]
     )
+	, "test mocking getElementById" : function(){
+		var gid = document.getElementById;
+		document.getElementById = 
+		    new Moock.Stub()
+		       .called(1)
+		       .receive(["a"])
+		       .returnedValue(document.createElement('div'));
+		       
+		document.getElementById("a");
+			   
+		document.getElementById.test();
+		
+		document.getElementById = gid;
+	}
 }); 
+
+
