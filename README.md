@@ -100,9 +100,9 @@ For more usage details, look up Libraries.Extra.js.
 This tool allows you to create a mock of a JS object. 
 The constructor accepts 3 arguments:
 
-	1. The object to mock
-	2. A list of methods to Stub and their returned value
-	3. A function to call on construction. The method will be scoped to the created Object and will receive the construction arguments.
+1. The object to mock
+2. A list of methods to Stub and their returned value
+3. A function to call on construction. The method will be scoped to the created Object and will receive the construction arguments.
 	
 Usage Example:
 
