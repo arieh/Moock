@@ -107,11 +107,13 @@ The constructor accepts 3 arguments:
 Usage Example:
 
 	#JS
+    //some basic constructor
 	function Construct(a,b){
 		this.a = a;
 		this.b = b;
 	}
 	
+    //adding methods
 	Constructs.prototype = {
 		doSomething : function(){
 			console.log(this.a);
@@ -121,7 +123,11 @@ Usage Example:
 		}
 	};
 	
-	var test = false, old = Constructor;
+	var test = false, 
+        old = Constructor; //keeping the old constructor 
+
+    //MOCKING HERE \/
+    
 	Constructor = new Moock.Mock(
 		Construct, 
 		{	
@@ -140,7 +146,7 @@ Usage Example:
 	
 	(new Constructor('a','b')).doElse();
 	
-	Constructor = old;
+	Constructor = old; //returning the constructor to its original value
 	
 	Moock.Assert.isTrue(test,"do something should have been called");
 	
