@@ -32,7 +32,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE 
 */
-
+/*global assertTrue, assertEquals */
 
 (function(window,undef){
 /**
@@ -40,7 +40,7 @@ THE SOFTWARE
  * 
  * Contains Version Number, Assertion Helpers, and Moock.Stub 
  */
-Moock = {
+var Moock = this.Moock = {
 	version : "0.8.2"
 	/**
 	 * @var {Function} pointer used to tell the stub to return "this"
@@ -79,9 +79,9 @@ Moock = {
 		 * @param {Object} msg
 		 */
 		isTrue : function(expr,msg){
-		  var libs = Moock.Libraries;
-		  for (var name in libs){
-		  	if (libs[name].check) libs[name].isTrue(expr,msg);
+		  var libs = Moock.Libraries, name;
+		  for (name in libs){
+		    if (libs[name].check) libs[name].isTrue(expr,msg);
 		  }	
 		}
 		/**
@@ -91,108 +91,109 @@ Moock = {
 		 * @param {Object} msg
 		 */
 		, areEqual : function(expect,actual,msg){
-          var libs = Moock.Libraries;
-          for (var name in libs){
-            if (libs[name].check) libs[name].areEqual(expect,actual,msg);
-          } 			
+            var libs = Moock.Libraries, name;
+            for (name in libs){
+                if (libs[name].check) libs[name].areEqual(expect,actual,msg);
+            }  	
 		}
 	}
-	/**
-	 * Stubbing Factory. Returns the Stub function. 
-	 * 
-	 * The returned stub comes with a set of syntax helpers methods that can create readable expectations.
-	 * These can only work for supported libs. You can extend the Moock.Assert to support other test libs.
-	 *  
-	 * @param {Object} value a value to be returned by the function
-	 * 
-	 * @return {Function} a stub function
-	 */
-	, Stub : function Stub(value){
-	    function stb(){
-	        var value = stb.returned;
-	        
-	        stb.used++;
-			 
-			if (stb.tests.args) Moock.Assert.areEqual(
-			   stb.tests.args
-			   , arguments
-			   , "Passed parameters do not meet expectations"
-			);
-			
-	        stb.args = arguments;
-	        if (value === Moock.return_self) return this;
-	        if (typeof value == 'function') return value.apply(stb,arguments);
-	        return value;
-	    }
-	    
-	    stb.used = 0;
-	    stb.args = [];
-	    
-	    stb.returned = value;
-	    
-	    stb.tests = {
-	        used : false
-	      , args : false
-	    };
-	    
-		/* Syntax Helpers */
-		
-		/**
-		 * How many times the function should run 
-		 * @param {Boolean|Number} num if set to true, will expect the function to run at least once. 
-		 *    If a number is supplied, should run the exact amount of times.
-		 *    
-		 * @return {Function} the stub object
-		 */
-	    stb.called = function shouldBeCalled(num){
-	       if (!num && num !==0){
-	           stb.tests.used = true;
-	       }else if (num || num===0){
-	           stb.tests.used = num;
-	       }
-	       return stb;
-	    };
-	    
-		/**
-		 * What argument should the function receive 
-		 * @param {Array} args
-         *    
-         * @return {Function} the stub object
-		 */
-	    stb.receive = function(args){
-	       stb.tests.args = args;
-	       return stb;
-	    };  
-	    
-		/**
-		 * what value whould the stub retrun (can function as a replacement for the value argument)
-		 * 
-		 * @param {Mixed} value
-         *    
-         * @return {Function} the stub object
-		 */
-	    stb.returnedValue = function(value){
-	       stb.returned = value;
-	       return stb;
-	    };
-	    
-		/**
-		 * tests that the expectation defined were met.
-         *    
-         * @return {Function} the stub object
-		 */
-	    stb.test = function(){
-		   var msg = "Number of calls did not meet expectation";
-		   
-		   if (typeof this.tests.used === 'number'){
-	           Moock.Assert.areEqual(this.tests.used,this.used,msg);
-	       }else if (this.tests.used) Moock.Assert.isTrue(!!this.called,msg);
-		   
-		   return stb;
-	    };
-	    
-	    return stb;
-	}
+};
+
+/**
+ * Stubbing Factory. Returns the Stub function. 
+ * 
+ * The returned stub comes with a set of syntax helpers methods that can create readable expectations.
+ * These can only work for supported libs. You can extend the Moock.Assert to support other test libs.
+ *  
+ * @param {Object} value a value to be returned by the function
+ * 
+ * @return {Function} a stub function
+ */
+Moock.Stub = function Stub(value){
+    function stb(){
+        var value = stb.returned;
+        
+        stb.used++;
+         
+        if (stb.tests.args) Moock.Assert.areEqual(
+           stb.tests.args
+           , arguments
+           , "Passed parameters do not meet expectations"
+        );
+        
+        stb.args = arguments;
+        if (value === Moock.return_self) return this;
+        if (typeof value == 'function') return value.apply(stb,arguments);
+        return value;
+    }
+    
+    stb.used = 0;
+    stb.args = [];
+    
+    stb.returned = value;
+    
+    stb.tests = {
+        used : false
+      , args : false
+    };
+    
+    /* Syntax Helpers */
+    
+    /**
+     * How many times the function should run 
+     * @param {Boolean|Number} num if set to true, will expect the function to run at least once. 
+     *    If a number is supplied, should run the exact amount of times.
+     *    
+     * @return {Function} the stub object
+     */
+    stb.called = function shouldBeCalled(num){
+       if (!num && num !==0){
+           stb.tests.used = true;
+       }else if (num || num===0){
+           stb.tests.used = num;
+       }
+       return stb;
+    };
+    
+    /**
+     * What argument should the function receive 
+     * @param {Array} args
+     *    
+     * @return {Function} the stub object
+     */
+    stb.receive = function(args){
+       stb.tests.args = args;
+       return stb;
+    };  
+    
+    /**
+     * what value whould the stub retrun (can function as a replacement for the value argument)
+     * 
+     * @param {Mixed} value
+     *    
+     * @return {Function} the stub object
+     */
+    stb.returnedValue = function(value){
+       stb.returned = value;
+       return stb;
+    };
+    
+    /**
+     * tests that the expectation defined were met.
+     *    
+     * @return {Function} the stub object
+     */
+    stb.test = function(){
+       var msg = "Number of calls did not meet expectation";
+       
+       if (typeof this.tests.used === 'number'){
+           Moock.Assert.areEqual(this.tests.used,this.used,msg);
+       }else if (this.tests.used) Moock.Assert.isTrue(!!this.called,msg);
+       
+       return stb;
+    };
+    
+    return stb;
 };
 
 /* Helper Functions */
@@ -202,8 +203,71 @@ Moock = {
  * @param {Object} stub
  * @return {bool}
  */
-isStub = function isStub(stub){
+Moock.isStub = function isStub(stub){
     return ("args" in stub && "called" in stub);
+};                     
+
+
+/**
+ * This Object allows you to selectively stub certain methods of an object, as well as 
+ * add tests to it's constructor
+ *
+ * @param Object|Function  obj          the object to test
+ * @oaram Object           list         a key value pairs of methods to stub and their returned value eg. {someMethod:'a', anotherMethod : Moock.return_self }
+ * @param Function         constructor  a function to run inside the constructor. Will recieve the arguments as a paramter
+ *
+ *
+ * This returned constructor will have a namespaced member called moock that privdes the same methods as a Stub does (called, received, test). 
+ * Note that `received` will be passed an array of passed arguments ([ ['a','b'], ['e','f'] ])
+ */
+Moock.Mock = function(obj,list,constructor){
+    list = list || {};
+
+    var key
+      , moock = {
+         used : 0 
+       , args : []
+       , tests : {
+            used : false
+          , args : false
+       }
+       , called : function(num){
+            this.tests.used = num;    
+            return this;
+       }
+       , received : function(args){
+            this.tests.args = args;   
+            return this;
+       }
+       , test : function(){
+		   var msg = "Number of calls did not meet expectation";
+		   
+		   if (typeof this.tests.used === 'number'){
+	           Moock.Assert.areEqual(this.tests.used,this.used,msg);
+	       }else if (this.tests.used) Moock.Assert.isTrue(!!this.called,msg);
+
+           return this;
+	    }
+    };                      
+        
+    function Mock(){
+        var args = Array.prototype.splice.call(arguments,0);
+
+        if (typeof obj == 'function') obj.apply(this,args);    
+        constructor && constructor.apply(this,args);
+
+        moock.used++;
+        moock.args.push(args);
+    }    
+
+    Mock.moock= moock;
+    Mock.prototype = obj.prototype;
+
+    for (key in list) if (list.hasOwnProperty(key)){
+        Mock.prototype[key] = new Moock.Stub(list[key]);    
+    }
+
+    return Mock;
 };
 
-})(this);
+}).apply(this,[window]);

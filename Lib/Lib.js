@@ -10,7 +10,7 @@
  * 
  * @return {Function}
  */
-function Fixture(func,args,bind){
+function DataProvider(func,args,bind){
     return function(){
        for (var i = args.length-1; i>=0; i--) func.apply(bind,args[i]);    
     };       

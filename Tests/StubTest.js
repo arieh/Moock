@@ -8,7 +8,7 @@ TestCase("StubTest",{
        stub();
        assertTrue(stub.used == true); 
     }
-    , "test stub uses returned vale" : Fixture(
+    , "test stub uses returned vale" : DataProvider(
        function(expected){
         var stub = new Moock.Stub(expected);
         assertEquals(expected,stub());
@@ -19,7 +19,7 @@ TestCase("StubTest",{
            ,[111]
        ]
     )
-    , "test stub saves received arguments" : Fixture(
+    , "test stub saves received arguments" : DataProvider(
        function(arg1,arg2){
         var stub = new Moock.Stub();
         stub(arg1,arg2);
@@ -69,7 +69,7 @@ TestCase("StubTest",{
 		stub();
 		stub.test();
 	}
-	, "test stub.receive should work" : Fixture(
+	, "test stub.receive should work" : DataProvider(
        function(){
         var stub = new Moock.Stub().receive(arguments);
 		stub.apply(null,arguments);
@@ -81,7 +81,7 @@ TestCase("StubTest",{
            ,[1,2]
        ]
     )
-	, "test stub.returnedValue" : Fixture(
+	, "test stub.returnedValue" : DataProvider(
        function(expected){
         var stub = new Moock.Stub().returnedValue(expected);
         assertEquals(expected,stub());

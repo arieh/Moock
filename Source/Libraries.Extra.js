@@ -33,8 +33,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE 
 */
 
+!function(global){
+
 Moock.Libraries.YUI =  {
-	    check : !!(window.YAHOO && YAHOO.utils && YAHOO.utils.Assert)
+	    check : !!(this.YAHOO && YAHOO.utils && YAHOO.utils.Assert)
 	    , isTrue : function(expr,msg){
 	        YAHOO.utils.Assert.isTrue(expr,msg);
 	    }
@@ -43,23 +45,24 @@ Moock.Libraries.YUI =  {
 	    }
 	};
 	
-Moock.Libraris.QUnit = {
-        check : !!(window.QUnit)
-            , isTrue : function(expr,msg){
-                QUnit.ok(expr,msg);
-            }
-            , areEqual : function(expect,actual,msg){
-                QUnit.equal(actual,expect,msg);
-            }
-        };
+Moock.Libraries.QUnit = {
+        check : !!(this.QUnit && QUnit.ok && QUnit.equal)
+        , isTrue : function(expr,msg){
+            QUnit.ok(expr,msg);
+        }
+        , areEqual : function(expect,actual,msg){
+            QUnit.equal(actual,expect,msg);
+        }
+    };
 		
 Moock.Libraries.jasmine = {
-            check : !!(window.jasmin && window.expect)
-            , isTrue : function(expr,msg){
-                expect(expr).toEqual(true);
-            }
-            , areEqual : function(expect,actual,msg){
-                expect(actual).toEqual(expect);
-            }
-        };
+        check : !!(this.jasmine && this.expect)
+        , isTrue : function(expr,msg){
+            expect(expr).toEqual(true);
+        }
+        , areEqual : function(expct,actual,msg){
+            expect(actual).toEqual(expct);
+        }
+    };
 		
+}.apply(window || this);
