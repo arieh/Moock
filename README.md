@@ -4,10 +4,10 @@ Moock is a package of tools for JS TDD development, specifically designed for Cl
 The 2 main tools supplied are:
 
 1. A method for creating stub functions, that allows you to define a set of expectations for the method and to pass it a returned value. 
-2. A Class Mutator that allows stubbing specific methods within a class.
+2. A Mocking tool for creating partial mocks for non-class objects
+3. A Class Mutator that allows stubbing specific methods within a class.
 
-
-*NOTE
+*NOTE*
 
 Since v0.8, Moock's Stub is now cross-lib, and supports advanced expectation settings. It's syntax is also slightly changed.
 Moock currently support these test libs:
@@ -15,7 +15,7 @@ Moock currently support these test libs:
 1. JsTestDriver
 2. YUI Test
 3. QUnit
-4. Jasmine*
+4. Jasmine
 
 *The basic stubbing mechanism was inspired by the mechanism described in [Test Driven Javascript Development](http://tddjs.com/).*
 
@@ -94,6 +94,57 @@ For more usage details, look up Libraries.Extra.js.
 
 
 ### Mocking
+
+#### Moock.Mock
+
+This tool allows you to create a mock of a JS object. 
+The constructor accepts 3 arguments:
+
+	1. The object to mock
+	2. A list of methods to Stub and their returned value
+	3. A function to call on construction. The method will be scoped to the created Object and will receive the construction arguments.
+	
+Usage Example:
+
+	#JS
+	function Construct(a,b){
+		this.a = a;
+		this.b = b;
+	}
+	
+	Constructs.prototype = {
+		doSomething : function(){
+			console.log(this.a);
+		} , 
+		doElse : function(){
+			this.doSomething();
+		}
+	};
+	
+	var test = false, old = Constructor;
+	Constructor = new Moock.Mock(
+		Construct, 
+		{	
+			doSomething : function(){
+				test = true;	
+			}
+		}
+		, function(a,b){
+			Moock.Assert.areEqaul(a,'a');
+			Moock.Assert.areEqual(b,'b');
+			
+			Moock.Assert.areEqaul(this.a,'a');
+			Moock.Assert.areEqual(this.b,'b');
+		}
+	);
+	
+	(new Constructor('a','b')).doElse();
+	
+	Constructor = old;
+	
+	Moock.Assert.isTrue(test,"do something should have been called");
+	
+#### Class.Mutators.Mock
 
 The package adds a new Class Mutator called Mock. It receives a literal object containing a list of method names 
 to mock paired with returned value.
