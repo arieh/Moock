@@ -1,6 +1,10 @@
-var Moock = require('../src/Moock');
-
 describe('Moock.wrap', function(){
+    //var window = {
+    //    setTimeout : function setTimeout(cb, delay){
+    //        cb();
+    //    }
+    //};
+
     var o_setTimeout = window.setTimeout;
 
     afterEach(function(){
@@ -11,17 +15,17 @@ describe('Moock.wrap', function(){
         it("Should allow wrapping a function", function(done){
             window.setTimeout = Moock.wrap(window.setTimeout);
 
-            function test(){
+            function setTimeout(){
                 window.setTimeout.test();
                 done();
             }
 
             window.setTimeout.called(1);
-            window.setTimeout.receive([test, 1000]);
-            window.setTimeout(test, 1000);
+            window.setTimeout.receive([setTimeout, 100]);
+            window.setTimeout(setTimeout, 100);
         });
 
-        it("Should allow passing a test function", function(done){
+        it("Should allow passing a setTimeout function", function(done){
             var arg;
 
             window.setTimeout = Moock.wrap(window.setTimeout, function(cb, time){
@@ -38,9 +42,7 @@ describe('Moock.wrap', function(){
         it("Should allow wrapping a method", function(done){
             Moock.wrap(window,'setTimeout');
 
-            window.setTimeout.returnedValue(done);
-
-            setTimeout(done, 1000);
+            window.setTimeout(done, 100);
         });
 
         it("Should have a restore method", function(done){
@@ -51,7 +53,7 @@ describe('Moock.wrap', function(){
 
                 expect(window.setTimeout).toBe(o_setTimeout);
                 done();
-            }, 1000);
+            }, 100);
         });
     });
 });

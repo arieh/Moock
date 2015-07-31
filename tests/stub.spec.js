@@ -1,5 +1,3 @@
-var moock = require('../src/Moock');
-
 describe('Moock.Stub', function(){
     var stb;
 
@@ -32,12 +30,30 @@ describe('Moock.Stub', function(){
         it("Should fail if called more than expected", function(){
             stb.called(2);
 
+            function test(){
+                stb();
+            }
+
             stb();
             stb();
+
+            expect(test).toThrow();
+        });
+
+        it("Should allow testing that a method should never be called", function(){
+            stb.called(0);
 
             expect(function(){
                 stb();
             }).toThrow();
+        });
+
+        it("Should allow testing that method is called at least once", function(){
+            stb.called();
+
+            stb();
+
+            stb.test();
         });
     });
 
@@ -66,6 +82,7 @@ describe('Moock.Stub', function(){
             var obj = {
                 a: stb
             };
+
             stb.returnedValue(Moock.return_self);
 
             expect(obj.a()).toBe(obj);

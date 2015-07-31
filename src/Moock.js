@@ -34,7 +34,7 @@
  */
 /*global assertTrue, assertEquals */
 
-(function(window,undef){
+(function(){
     /**
      * Main Namespace
      *
@@ -45,7 +45,7 @@
         /**
          * @var {Function} pointer used to tell the stub to return "this"
          */
-        , return_self : function(){}
+        , return_self : new Function()
         /**
          * Library Assertion Helpers for cross-lib compatibility.
          * Currently Supported:
@@ -58,10 +58,10 @@
             jasmine : {
                 check : !!(this.jasmine && this.expect)
                 , isTrue : function(expr,msg){
-                    expect(expr).toEqual(true);
+                    expect(expr).toEqual(true, msg);
                 }
                 , areEqual : function(expct,actual,msg){
-                    expect(actual).toEqual(expct);
+                    expect(actual).toEqual(expct, msg);
                 }
             }
         }
@@ -111,7 +111,7 @@
 
             stb.used++;
 
-            if (stb.tests.used && stb.used > stb.tests.used) {
+            if (stb.tests.used != null && stb.used > stb.tests.used) {
                 throw "Calling a function more times than allowed. Expected: " + stb.tests.used + ". Called: " + stb.used;
             }
 
@@ -145,7 +145,7 @@
             stb.returned = value;
 
             stb.tests = {
-                used : false
+                used : null
                 , args : false
             };
 
@@ -181,7 +181,7 @@
         /**
          * what value whould the stub retrun (can function as a replacement for the value argument)
          *
-         * @param {Mixed} value
+         * @param {*} value
          *
          * @return {Function} the stub object
          */
@@ -226,9 +226,9 @@
      * This Object allows you to selectively stub certain methods of an object, as well as
      * add tests to it's constructor
      *
-     * @param Object|Function  obj          the object to test
-     * @oaram Object           list         a key value pairs of methods to stub and their returned value eg. {someMethod:'a', anotherMethod : Moock.return_self }
-     * @param Function         constructor  a function to run inside the constructor. Will recieve the arguments as a paramter
+     * @param {Object|Function}  obj          the object to test
+     * @param {Object}           list         a key value pairs of methods to stub and their returned value eg. {someMethod:'a', anotherMethod : Moock.return_self }
+     * @param {Function}         constructor  a function to run inside the constructor. Will recieve the arguments as a paramter
      *
      *
      * This returned constructor will have a namespaced member called moock that privdes the same methods as a Stub does (called, received, test).
