@@ -159,9 +159,9 @@
          * @return {Function} the stub object
          */
         stb.called = function shouldBeCalled(num){
-            if (!num && num !==0){
+            if (num == null){
                 stb.tests.used = true;
-            }else if (num || num===0){
+            } else {
                 stb.tests.used = num;
             }
             return stb;
@@ -200,7 +200,9 @@
 
             if (typeof this.tests.used === 'number'){
                 Moock.Assert.areEqual(this.tests.used,this.used,msg);
-            }else if (this.tests.used) Moock.Assert.isTrue(!!this.called,msg);
+            }else if (this.tests.used) {
+                Moock.Assert.isTrue(!!this.called,msg);
+            }
 
             return stb;
         };
@@ -220,70 +222,6 @@
     Moock.isStub = function isStub(stub){
         return ("args" in stub && "called" in stub);
     };
-
-
-    /**
-     * This Object allows you to selectively stub certain methods of an object, as well as
-     * add tests to it's constructor
-     *
-     * @param {Object|Function}  obj          the object to test
-     * @param {Object}           list         a key value pairs of methods to stub and their returned value eg. {someMethod:'a', anotherMethod : Moock.return_self }
-     * @param {Function}         constructor  a function to run inside the constructor. Will recieve the arguments as a paramter
-     *
-     *
-     * This returned constructor will have a namespaced member called moock that privdes the same methods as a Stub does (called, received, test).
-     * Note that `received` will be passed an array of passed arguments ([ ['a','b'], ['e','f'] ])
-     */
-    Moock.Mock = function(obj,list,constructor){
-        list = list || {};
-
-        var key
-            , moock = {
-                used : 0
-                , args : []
-                , tests : {
-                    used : false
-                    , args : false
-                }
-                , called : function(num){
-                    this.tests.used = num;
-                    return this;
-                }
-                , received : function(args){
-                    this.tests.args = args;
-                    return this;
-                }
-                , test : function(){
-                    var msg = "Number of calls did not meet expectation";
-
-                    if (typeof this.tests.used === 'number'){
-                        Moock.Assert.areEqual(this.tests.used,this.used,msg);
-                    }else if (this.tests.used) Moock.Assert.isTrue(!!this.called,msg);
-
-                    return this;
-                }
-            };
-
-        function Mock(){
-            var args = Array.prototype.splice.call(arguments,0);
-
-            if (typeof obj == 'function') obj.apply(this,args);
-            constructor && constructor.apply(this,args);
-
-            moock.used++;
-            moock.args.push(args);
-        }
-
-        Mock.moock= moock;
-        Mock.prototype = obj.prototype;
-
-        for (key in list) if (list.hasOwnProperty(key)){
-            Mock.prototype[key] = new Moock.Stub(list[key]);
-        }
-
-        return Mock;
-    };
-
     /**
      * Allows spying on a function or on an object's method
      *
@@ -324,14 +262,53 @@
             obj[method_name] = stb;
 
             stb.restore = function(){
-                if (obj) {
-                    obj[method_name] = method;
-                }
+                obj[method_name] = method;
             };
         } else {
             return stb;
         }
     };
+
+    /**
+     * This Object allows you to selectively stub certain methods of an object, as well as
+     * add tests to it's constructor
+     *
+     * @param {Object|Function}  obj          the object to test
+     * @param {Object}           list         a key value pairs of methods to stub and their returned value eg. {someMethod:'a', anotherMethod : Moock.return_self }
+     * @param {Function}         constructor  a function to run inside the constructor. Will recieve the arguments as a paramter
+     *
+     *
+     * This returned constructor will have a namespaced member called moock that privdes the same methods as a Stub does (called, received, test).
+     * Note that `received` will be passed an array of passed arguments ([ ['a','b'], ['e','f'] ])
+     */
+    Moock.Mock = function(obj,list,constructor){
+        list = list || {};
+
+        var key;
+
+        function Mock(){
+            var args = [].slice.call(arguments);
+
+            Mock.moock.apply(null, args);
+
+            obj.apply && obj.apply(this, args);
+
+            constructor && constructor.apply(this, args);
+
+            return this;
+        }
+
+        Mock.moock= new Moock.Stub();
+        Mock.prototype = obj.prototype;
+
+        for (key in list) {
+            Mock.prototype[key] = new Moock.Stub(list[key]);
+        }
+
+        return Mock;
+    };
+
+
 
     try{
         module.exports = Moock;

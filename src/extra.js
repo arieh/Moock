@@ -35,12 +35,6 @@ THE SOFTWARE
 
 !function(global){
 
-if (!global.Moock) {
-    try{
-        var Moock = require('./Moock');
-    }catch(e){}
-}
-
 Moock.Libraries.YUI =  {
 	    check : !!(this.YAHOO && YAHOO.utils && YAHOO.utils.Assert)
 	    , isTrue : function(expr,msg){

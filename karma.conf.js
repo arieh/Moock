@@ -8,6 +8,7 @@ module.exports = function(karma) {
     frameworks: [ 'jasmine'],
 
     files: [
+      'src/Moock.js',
       'src/**/*.js',
       'tests/**/*.js'
     ],

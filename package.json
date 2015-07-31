@@ -1,7 +1,7 @@
 {
   "name": "moock",
   "description" : "mocking library",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "test": "karma start karma.npm.conf"
   },

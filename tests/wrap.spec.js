@@ -26,7 +26,7 @@ describe('Moock.wrap', function(){
         });
 
         it("Should allow passing a setTimeout function", function(done){
-            var arg;
+            var arg=null;
 
             window.setTimeout = Moock.wrap(window.setTimeout, function(cb, time){
                 arg = time;

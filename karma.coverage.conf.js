@@ -8,20 +8,21 @@ module.exports = function(karma) {
     frameworks: [ 'jasmine' ],
 
     files: [
+      'src/Moock.js',
       'src/**/*.js',
       'tests/**/*.js'
     ],
 
     preprocessors: {
-      'src/**/*.js': [ 'coverage']
+      'src/Moock.js': [ 'coverage']
     },
 
     browsers: [ 'Chrome' ],
 
     logLevel: 'LOG_INFO',
 
-    singleRun: false,
-    autoWatch: true,
+    singleRun: true,
+    autoWatch: false,
 
     coverageReporter: {
       type : 'html',
