@@ -5,12 +5,9 @@ The 2 main tools supplied are:
 
 1. A method for creating stub functions, that allows you to define a set of expectations for the method and to pass it a returned value. 
 2. A Mocking tool for creating partial mocks for non-class objects
-3. A Class Mutator that allows stubbing specific methods within a class.
 
 *NOTE*
-
-Since v0.8, Moock's Stub is now cross-lib, and supports advanced expectation settings. It's syntax is also slightly changed.
-Moock currently support these test libs:
+Moock supports the following testing frameworks, and defaults to Jasmine:
 
 1. JsTestDriver
 2. YUI Test
@@ -28,8 +25,9 @@ How to use
 
 For creating stubs, we create a new Moock.Stub instance:
 
-    #JS
+    ```
     var stub = new Moock.Stub([retunedValue])
+    ```
 
 The returned object provides the following helpers for the supported librarys:
 
@@ -40,7 +38,7 @@ The returned object provides the following helpers for the supported librarys:
 
 Example:
     
-    #JS
+    ```
     var stub = new Moock.Stub()
         .called(1)
         .receive(["a","b"])
@@ -48,38 +46,43 @@ Example:
             
     console.log(stub("a","b")); //aabb
     stub.test();
+    ```
     
 For chaining, the library supplies a helper variable - `Moock.return_self`:
 
-    #JS
+    ```
     var obj = {
         stub : new Moock.Stub().returnedValue(Moock.return_self)
     };
      
     assertTrue(obj === stub());
+    ```
          
 The returned value can also be a function. If so, the function will be used when the stub is called, receiving the passed arguments:
 
-    #JS
+    ```
     var stub = new Moock.Stub(function(a,b){return a+b});
     
     console.log(stub("a","b")); //ab
+    ```
 
 Lastly, for those who want to use the library with non-supported libraries, the Stub object also supllies these low-leveled properties that you can use to test your stubs:
 
 * used (`int`) : how many times the stub was called
-* args (`array`) : what argumens were passed to the stub on the last call
+* args (`array`) : what arguments were passed to the stub on the last call
+* argument_stack (`array`) : an array containing all the consecutive arguments passed to the function. Useful for function that is being called multiple times.
 * returned : what value to return when the stub is called.
 
 Example:
 
-    #JS
+    ```
     var stub = new Moock.Stub('aaa');
         
     console.log(stub("a")); //aaa
     console.log(stub.used); //1
          
     console.log(stub.args); //["a"]
+    ```
 
 #### Adding more library support
 
@@ -92,7 +95,39 @@ containing the folowing properties/methods:
 
 For more usage details, look up Libraries.Extra.js. 
 
+### Wrapping
 
+Moock comes with a simple wrapping function, in case you want to "spy" on a function or an object's method without removing it
+
+    ```
+    //options #1
+    var setTimeout = Moock.wrap(window.setTimeout);
+    setTimeout.called(1);
+    
+    setTimeout(function(){
+        console.log('foo');
+    }, 1000);
+    
+    setTimeout.test();
+    
+    //after 1s - logs foo
+    
+    
+    //options #2
+    
+    Moock.wrap(window, 'setTimeout');
+    
+    setTimeout.called(1);
+    
+    setTimeout(function(){
+        console.log('bar');
+    }, 1000);
+    
+    setTimeout.test();
+    
+    setTimeout.restore(); //will restore window.setTimeout to original method
+    ```
+    
 ### Mocking
 
 #### Moock.Mock
@@ -106,7 +141,7 @@ The constructor accepts 3 arguments:
 	
 Usage Example:
 
-	#JS
+	```
     //some basic constructor
 	function Construct(a,b){
 		this.a = a;
@@ -149,78 +184,4 @@ Usage Example:
 	Constructor = old; //returning the constructor to its original value
 	
 	Moock.Assert.isTrue(test,"do something should have been called");
-	
-#### Class.Mutators.Mock
-
-The package adds a new Class Mutator called Mock. It receives a literal object containing a list of method names 
-to mock paired with returned value.
-*NOTE - all stubbed methods are full Moock.Stub instances*
-
-    #JS
-    /* simple usage */
-    var mock = new Class({
-        Mock : {
-            'methodA' : 'aaa'
-        }
-    });
-    
-    var m = new mock;
-    
-    assertFalse(m.methodA.called);
-    assertEquals("aaa",m.methodA('bbb'));
-    assertTrue(m.methodA.called);
-    assertEquals(['bbb'],m.methodA.args);
-    
-
-#### Creating a Class's Mock:
-
-    #JS
-    var cls = new Class({
-        methodA : function(){/* do something */ }
-    });
-    
-    var mock = new Class({
-        Extends : cls
-        , Mock : {
-            'methodA' : 'aaa'
-        } 
-    });
-    
-    var m = new mock;
-    assertTrue(m instanceof cls);
-    assertTrue(isStub(m.methodA));
-    
-#### Mocking only certain parts of a Class:
-
-    #JS
-    var cls = new Class({
-        methodA : function(){}
-        methodB : function(){
-            console.log(this.methodA("a","b","c");)
-        }
-    });
-    
-    var mock = new Class({
-        Extends : cls
-        , Mock :{
-            methodA : "bbb"
-        }
-    });
-    
-    var m = new mock;
-    m.methodB(); //logs "bbb"
-    
-    assertEqauls(["a","b","c"],m.methodA.args);
-    
-    
-The package also comes with a helper function - `getMock` - that creates a mock that is an instance of a certain Class. 
-If that Class is not defined, the helper will create a mock of that Class. This is useful for dependency injection tests:
-
-    #JS
-    var mock = getMock('ClassA',{
-        doSomething : 'something'
-    });
-    
-    var m = new mock;
-    
-    assertTrue(m instanceof ClassA); //works whether there is a real ClassA or not
+    ```
