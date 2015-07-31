@@ -1,11 +1,13 @@
 {
-  "name": "karma-browserify-example",
-  "version": "0.0.0",
+  "name": "moock",
+  "description" : "mocking library",
+  "version": "1.0.1",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start karma.npm.conf"
   },
+  "main" : "src/Moock.js",
   "keywords": [
-    "karma-browserify"
+    "mock","tests","karma","jasmine"
   ],
   "devDependencies": {
     "brfs": "^1.2.0",
@@ -21,5 +23,10 @@
   },
   "browserify-shim": {
     "external": "global:External"
+  },
+  "repository" :
+  {
+   "type" : "git",
+   "url" : "https://github.com/arieh/Moock.git"
   }
 }

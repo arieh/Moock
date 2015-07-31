@@ -25,9 +25,9 @@ How to use
 
 For creating stubs, we create a new Moock.Stub instance:
 
-    ```
-    var stub = new Moock.Stub([retunedValue])
-    ```
+```
+var stub = new Moock.Stub([retunedValue])
+```
 
 The returned object provides the following helpers for the supported librarys:
 
@@ -38,33 +38,33 @@ The returned object provides the following helpers for the supported librarys:
 
 Example:
     
-    ```
-    var stub = new Moock.Stub()
-        .called(1)
-        .receive(["a","b"])
-        .returnedValue("aabb");
-            
-    console.log(stub("a","b")); //aabb
-    stub.test();
-    ```
+```
+var stub = new Moock.Stub()
+    .called(1)
+    .receive(["a","b"])
+    .returnedValue("aabb");
+        
+console.log(stub("a","b")); //aabb
+stub.test();
+```
     
 For chaining, the library supplies a helper variable - `Moock.return_self`:
 
-    ```
-    var obj = {
-        stub : new Moock.Stub().returnedValue(Moock.return_self)
-    };
-     
-    assertTrue(obj === stub());
-    ```
+```
+var obj = {
+    stub : new Moock.Stub().returnedValue(Moock.return_self)
+};
+ 
+assertTrue(obj === stub());
+```
          
 The returned value can also be a function. If so, the function will be used when the stub is called, receiving the passed arguments:
 
-    ```
-    var stub = new Moock.Stub(function(a,b){return a+b});
-    
-    console.log(stub("a","b")); //ab
-    ```
+```
+var stub = new Moock.Stub(function(a,b){return a+b});
+
+console.log(stub("a","b")); //ab
+```
 
 Lastly, for those who want to use the library with non-supported libraries, the Stub object also supllies these low-leveled properties that you can use to test your stubs:
 
@@ -75,14 +75,14 @@ Lastly, for those who want to use the library with non-supported libraries, the 
 
 Example:
 
-    ```
-    var stub = new Moock.Stub('aaa');
-        
-    console.log(stub("a")); //aaa
-    console.log(stub.used); //1
-         
-    console.log(stub.args); //["a"]
-    ```
+```
+var stub = new Moock.Stub('aaa');
+    
+console.log(stub("a")); //aaa
+console.log(stub.used); //1
+     
+console.log(stub.args); //["a"]
+```
 
 #### Adding more library support
 
@@ -99,34 +99,34 @@ For more usage details, look up Libraries.Extra.js.
 
 Moock comes with a simple wrapping function, in case you want to "spy" on a function or an object's method without removing it
 
-    ```
-    //options #1
-    var setTimeout = Moock.wrap(window.setTimeout);
-    setTimeout.called(1);
-    
-    setTimeout(function(){
-        console.log('foo');
-    }, 1000);
-    
-    setTimeout.test();
-    
-    //after 1s - logs foo
-    
-    
-    //options #2
-    
-    Moock.wrap(window, 'setTimeout');
-    
-    setTimeout.called(1);
-    
-    setTimeout(function(){
-        console.log('bar');
-    }, 1000);
-    
-    setTimeout.test();
-    
-    setTimeout.restore(); //will restore window.setTimeout to original method
-    ```
+```
+//options #1
+var setTimeout = Moock.wrap(window.setTimeout);
+setTimeout.called(1);
+
+setTimeout(function(){
+    console.log('foo');
+}, 1000);
+
+setTimeout.test();
+
+//after 1s - logs foo
+
+
+//options #2
+
+Moock.wrap(window, 'setTimeout');
+
+setTimeout.called(1);
+
+setTimeout(function(){
+    console.log('bar');
+}, 1000);
+
+setTimeout.test();
+
+setTimeout.restore(); //will restore window.setTimeout to original method
+```
     
 ### Mocking
 
@@ -141,47 +141,47 @@ The constructor accepts 3 arguments:
 	
 Usage Example:
 
-	```
-    //some basic constructor
-	function Construct(a,b){
-		this.a = a;
-		this.b = b;
-	}
-	
-    //adding methods
-	Constructs.prototype = {
-		doSomething : function(){
-			console.log(this.a);
-		} , 
-		doElse : function(){
-			this.doSomething();
-		}
-	};
-	
-	var test = false, 
-        old = Constructor; //keeping the old constructor 
+```
+//some basic constructor
+function Construct(a,b){
+    this.a = a;
+    this.b = b;
+}
 
-    //MOCKING HERE \/
-    
-	Constructor = new Moock.Mock(
-		Construct, 
-		{	
-			doSomething : function(){
-				test = true;	
-			}
-		}
-		, function(a,b){
-			Moock.Assert.areEqaul(a,'a');
-			Moock.Assert.areEqual(b,'b');
-			
-			Moock.Assert.areEqaul(this.a,'a');
-			Moock.Assert.areEqual(this.b,'b');
-		}
-	);
-	
-	(new Constructor('a','b')).doElse();
-	
-	Constructor = old; //returning the constructor to its original value
-	
-	Moock.Assert.isTrue(test,"do something should have been called");
-    ```
+//adding methods
+Constructs.prototype = {
+    doSomething : function(){
+        console.log(this.a);
+    } , 
+    doElse : function(){
+        this.doSomething();
+    }
+};
+
+var test = false, 
+    old = Constructor; //keeping the old constructor 
+
+//MOCKING HERE \/
+
+Constructor = new Moock.Mock(
+    Construct, 
+    {	
+        doSomething : function(){
+            test = true;	
+        }
+    }
+    , function(a,b){
+        Moock.Assert.areEqaul(a,'a');
+        Moock.Assert.areEqual(b,'b');
+        
+        Moock.Assert.areEqaul(this.a,'a');
+        Moock.Assert.areEqual(this.b,'b');
+    }
+);
+
+(new Constructor('a','b')).doElse();
+
+Constructor = old; //returning the constructor to its original value
+
+Moock.Assert.isTrue(test,"do something should have been called");
+```
