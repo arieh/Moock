@@ -1,7 +1,7 @@
 {
   "name": "moock",
   "description" : "mocking library",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "test": "karma start karma.npm.conf"
   },
@@ -9,6 +9,10 @@
   "keywords": [
     "mock","tests","karma","jasmine"
   ],
+  "author" : {
+    "name" : "Arieh Glazer",
+    "email" : "arieh@arieh.co.il"
+  },
   "devDependencies": {
     "karma": "^0.12.0",
     "karma-jasmine": "^0.2.0",
