@@ -40,7 +40,7 @@
      *
      * Contains Version Number, Assertion Helpers, and Moock.Stub
      */
-    var Moock = this.Moock = {
+    var Moock = {
         version : "1.0.0"
         /**
          * @var {Function} pointer used to tell the stub to return "this"
@@ -106,13 +106,19 @@
      * @return {Function} a stub function
      */
     Moock.Stub = function Stub(value){
+        function generateError(err){
+            var name = stb.$name ? `(${stb.$name})` : '';
+
+            return `${err} ${name}`;
+        }
+
         function stb(){
             var value = stb.returned;
 
             stb.used++;
 
             if (stb.tests.used != null && stb.used > stb.tests.used) {
-                throw "Calling a function more times than allowed. Expected: " + stb.tests.used + ". Called: " + stb.used;
+                throw generateError("Calling a function more times than allowed. Expected: " + stb.tests.used + ". Called: " + stb.used);
             }
 
             stb.args = [].slice.call(arguments);
@@ -120,7 +126,7 @@
             if (stb.tests.args) Moock.Assert.areEqual(
                 stb.tests.args
                 , stb.args
-                , "Passed parameters do not meet expectations"
+                , generateError("Passed parameters do not meet expectations")
             );
 
             stb.argument_stack.push(stb.args);
@@ -196,7 +202,7 @@
          * @return {Function} the stub object
          */
         stb.test = function(){
-            var msg = "Number of calls did not meet expectation";
+            var msg = generateError("Number of calls did not meet expectation");
 
             if (typeof this.tests.used === 'number'){
                 Moock.Assert.areEqual(this.tests.used,this.used,msg);
@@ -308,10 +314,21 @@
         return Mock;
     };
 
-
+    var external = false;
 
     try{
         module.exports = Moock;
+        external = true;
     }catch(e){}
 
-}).apply(this,[window]);
+    try{
+        define(function(){
+            return Moock;
+        });
+        external = true;
+    }catch(e){}
+
+    if (!external) {
+        this.Moock = Moock;
+    }
+}).apply(this);
