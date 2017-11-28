@@ -213,6 +213,8 @@
             return stb;
         };
 
+        if (value) stb.returnedValue(value);
+
         stb.reset();
 
         return stb;
